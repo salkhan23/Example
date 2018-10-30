@@ -138,7 +138,7 @@ if __name__ == '__main__':
     )
 
     model.summary()
-    plot_model(model, results_dir + 'model_arch.eps', show_shapes=True)
+    plot_model(model, os.path.join(results_dir, 'model_arch.eps'), show_shapes=True)
 
     # -----------------------------------------------------------------------------------
     # Preprocess the Data
