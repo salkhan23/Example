@@ -27,7 +27,7 @@ N_EPOCHS = 300
 
 
 def preprocess_data_minus_one_to_one(x):
-    2 * (x - x.min()) / (x.max() - x.min()) - 1  # values from -1 to 1
+    x = 2 * ((x - x.min()) / (x.max() - x.min())) - 1  # values from -1 to 1
     return x
 
 
@@ -122,11 +122,11 @@ if __name__ == '__main__':
     # Build the model
     # -----------------------------------------------------------------------------------
     print("Building the model ...")
-    # model = all_conv_net.get_model(n_classes)
+    model = all_conv_net.get_model(n_classes)
     # model = DenseNet121(classes=n_classes, weights=None, input_shape=(32,32,3))
     # keras_backend.set_image_data_format('channels_last')
     # model = densenet.get_model()
-    model = wide_resenet_model.get_model()
+    # model = wide_resenet_model.get_model()
 
 
     optimizer = keras.optimizers.SGD(lr=0.1, momentum=0.9, nesterov=True)
@@ -152,6 +152,10 @@ if __name__ == '__main__':
     # X_train /= 255.0
     # X_validation /= 255.0
     # X_test /= 255.0
+
+    X_train = preprocess_data_minus_one_to_one(X_train)
+    X_validation = preprocess_data_minus_one_to_one(X_validation)
+    X_test = preprocess_data_minus_one_to_one(X_test)
 
     X_train = preprocess_data_zero_mean_one_std(X_train)
     X_validation = preprocess_data_zero_mean_one_std(X_validation)
