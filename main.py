@@ -67,7 +67,7 @@ if __name__ == '__main__':
     # Validation split
     validation_data_split = 0.05
 
-    results_identifier = 'densenet_40_12'
+    results_identifier = 'densenet_bc_100_12'
 
     # Immutable ------------------------------------------------
     np.random.seed(RANDOM_SEED)
@@ -122,10 +122,11 @@ if __name__ == '__main__':
     # Build the model
     # -----------------------------------------------------------------------------------
     print("Building the model ...")
-    model = all_conv_net.get_model(n_classes)
+    # model = all_conv_net.get_model(n_classes)
     # model = DenseNet121(classes=n_classes, weights=None, input_shape=(32,32,3))
     # keras_backend.set_image_data_format('channels_last')
     # model = densenet.get_model()
+    model = densenet.get_densenet_bc_100_model()
     # model = wide_resenet_model.get_model()
 
     optimizer = keras.optimizers.SGD(lr=0.1, momentum=0.9, nesterov=True)
@@ -175,7 +176,7 @@ if __name__ == '__main__':
         rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
         width_shift_range=5./32,  # randomly shift images horizontally (fraction of total width)
         height_shift_range=5./32,  # randomly shift images vertically (fraction of total height)
-        horizontal_flip=True,  # randomly flip images
+        horizontal_flip=False,  # randomly flip images
         vertical_flip=True
     )
 
