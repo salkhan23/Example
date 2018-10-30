@@ -128,9 +128,8 @@ if __name__ == '__main__':
     # model = densenet.get_model()
     # model = wide_resenet_model.get_model()
 
-
     optimizer = keras.optimizers.SGD(lr=0.1, momentum=0.9, nesterov=True)
-    #optimizer = keras.optimizers.Adam()
+    # optimizer = keras.optimizers.Adam()
 
     model.compile(
         loss='categorical_crossentropy',
@@ -245,6 +244,3 @@ if __name__ == '__main__':
         handle.write("ids,labels\n")
         for img_idx in np.arange(X_test.shape[0]):
             handle.write(str(img_idx) + ', ' + str(y_hat_max[img_idx]) + '\n')
-
-
-
