@@ -243,4 +243,4 @@ if __name__ == '__main__':
     with open(test_predictions_file, 'w+') as handle:
         handle.write("ids,labels\n")
         for img_idx in np.arange(X_test.shape[0]):
-            handle.write(str(img_idx) + ', ' + str(y_hat_max[img_idx]) + '\n')
+            handle.write(str(img_idx) + ',' + str(y_hat_max[img_idx]) + '\n')
