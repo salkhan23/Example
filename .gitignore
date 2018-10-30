@@ -1,0 +1,19 @@
+# Compiled python files
+#----------------------
+*.py[cod]
+
+PyCharm MetaData
+#---------------------
+.idea
+
+#Tensorboard logs
+logs
+
+# Ignore the data directory
+data/curved_contours
+data/imagenet-data
+
+# Ignore the results directory
+results
+data
+tensorboard_logs
