@@ -23,7 +23,7 @@ import models.wide_renset_model as wide_resenet_model
 
 
 BASE_RESULTS_DIR = './results'
-N_EPOCHS = 10
+N_EPOCHS = 300
 
 
 def preprocess_data_minus_one_to_one(x):
@@ -43,6 +43,64 @@ def preprocess_data_zero_mean_one_std(x):
     broadcast_shape[3 - 1] = x.shape[3]
     std = np.reshape(std, broadcast_shape)
     x /= (std + 1e-6)
+
+    return x
+
+
+def preprocess_cutoff(input_x):
+    "Cutoff Preprocessing Improved Regularization of Convolutional Neural Networks with Cutout"
+
+    p = 0.5
+    cutoff_size = 8
+
+    h = input_x.shape[0]
+    w = input_x.shape[1]
+
+    mask = np.ones((h, w))
+
+    p_1 = np.random.rand()
+
+    if p_1 > p:
+        return input_x
+    else:
+        y = np.random.randint(h)
+        x = np.random.randint(w)
+
+        y1 = np.clip(y - cutoff_size // 2, 0, h)
+        y2 = np.clip(y + cutoff_size // 2, 0, h)
+        x1 = np.clip(x - cutoff_size // 2, 0, w)
+        x2 = np.clip(x + cutoff_size // 2, 0, w)
+        # print("{},{},{},{}".format(y1, y2, x1, x2))
+
+        mask[y1:y2, x1:x2] = 0.
+        mask = np.expand_dims(mask, axis=-1)
+
+        input_x = mask * input_x
+
+        return input_x
+
+
+def preprocess_crop(input_x):
+
+    pad = 4
+    h_pad = pad // 2
+
+    h = input_x.shape[0]
+    w = input_x.shape[1]
+
+    x_enlarged = np.pad(input_x, ((h_pad, h_pad), (h_pad, h_pad), (0, 0)), 'constant')
+
+    start_x = np.random.randint(0, pad)
+    start_y = np.random.randint(0, pad)
+
+    x_cropped = x_enlarged[start_y:start_y + w, start_x:start_x + h, :]
+
+    return x_cropped
+
+
+def preprocess_crop_and_cutout(input_x):
+    x = preprocess_crop(input_x)
+    x = preprocess_cutoff(x)
 
     return x
 
@@ -67,7 +125,7 @@ if __name__ == '__main__':
     # Validation split
     validation_data_split = 0.05
 
-    results_identifier = 'test'
+    results_identifier = 'all_convnet_cutout'
 
     # Immutable ------------------------------------------------
     np.random.seed(RANDOM_SEED)
@@ -176,8 +234,9 @@ if __name__ == '__main__':
         rotation_range=0,  # randomly rotate images in the range (degrees, 0 to 180)
         width_shift_range=5./32,  # randomly shift images horizontally (fraction of total width)
         height_shift_range=5./32,  # randomly shift images vertically (fraction of total height)
-        horizontal_flip=False,  # randomly flip images
-        vertical_flip=True
+        horizontal_flip=True,  # randomly flip images
+        vertical_flip=True,
+        preprocessing_function=preprocess_crop
     )
 
     datagen.fit(X_train, augment=True)
@@ -234,6 +293,7 @@ if __name__ == '__main__':
     ax_arr[1].plot(history['acc'], color='r', label='train')
     ax_arr[1].plot(history['val_acc'], color='b', label='validation')
     ax_arr[1].set_title("Accuracy")
+    ax_arr[1].legend()
     f.savefig(os.path.join(results_dir, 'training.eps'), format='eps')
 
     # -----------------------------------------------------------------------------------
