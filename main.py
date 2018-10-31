@@ -23,7 +23,7 @@ import models.wide_renset_model as wide_resenet_model
 
 
 BASE_RESULTS_DIR = './results'
-N_EPOCHS = 300
+N_EPOCHS = 10
 
 
 def preprocess_data_minus_one_to_one(x):
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     # Validation split
     validation_data_split = 0.05
 
-    results_identifier = 'densenet_bc_100_12'
+    results_identifier = 'test'
 
     # Immutable ------------------------------------------------
     np.random.seed(RANDOM_SEED)
@@ -122,11 +122,11 @@ if __name__ == '__main__':
     # Build the model
     # -----------------------------------------------------------------------------------
     print("Building the model ...")
-    # model = all_conv_net.get_model(n_classes)
+    model = all_conv_net.get_model(n_classes)
     # model = DenseNet121(classes=n_classes, weights=None, input_shape=(32,32,3))
     # keras_backend.set_image_data_format('channels_last')
     # model = densenet.get_model()
-    model = densenet.get_densenet_bc_100_model()
+    # model = densenet.get_densenet_bc_100_model()
     # model = wide_resenet_model.get_model()
 
     optimizer = keras.optimizers.SGD(lr=0.1, momentum=0.9, nesterov=True)
@@ -223,6 +223,9 @@ if __name__ == '__main__':
     f, ax_arr = plt.subplots(1, 2)
 
     history = history_callback.history
+    # Save the history of the model
+    with open(os.path.join(results_dir, 'history.pkl'), 'wb+') as handle:
+        pickle.dump(history, handle)
 
     ax_arr[0].plot(history['loss'], color='r', label='train')
     ax_arr[0].plot(history['val_loss'], color='b', label='validation')
@@ -231,6 +234,7 @@ if __name__ == '__main__':
     ax_arr[1].plot(history['acc'], color='r', label='train')
     ax_arr[1].plot(history['val_acc'], color='b', label='validation')
     ax_arr[1].set_title("Accuracy")
+    f.savefig(os.path.join(results_dir, 'training.eps'), format='eps')
 
     # -----------------------------------------------------------------------------------
     # Evaluating Test Data
