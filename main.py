@@ -236,7 +236,7 @@ if __name__ == '__main__':
         height_shift_range=5./32,  # randomly shift images vertically (fraction of total height)
         horizontal_flip=True,  # randomly flip images
         vertical_flip=True,
-        preprocessing_function=preprocess_crop
+        preprocessing_function=preprocess_crop_and_cutout
     )
 
     datagen.fit(X_train, augment=True)
